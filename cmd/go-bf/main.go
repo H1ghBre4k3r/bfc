@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/H1ghBre4k3r/go-bf/internal/interpreter"
 )
 
 func main() {
@@ -15,7 +17,8 @@ func main() {
 	if *compile {
 		fmt.Println("Compilation currently not supported!")
 		os.Exit(-1)
+	} else {
+		inter := interpreter.New(*inputPath)
+		inter.Start()
 	}
-
-	fmt.Printf("%v\n", *inputPath)
 }
