@@ -54,6 +54,7 @@ loop:
 			} else {
 				instructions[insLen-1].Operand += 1
 			}
+
 		case tokens.LEFT:
 			if insLen == 0 || instructions[insLen-1].Operation != MOVE {
 				instructions = append(instructions, Instruction{
@@ -63,6 +64,7 @@ loop:
 			} else {
 				instructions[insLen-1].Operand -= 1
 			}
+
 		case tokens.OUT:
 			instructions = append(instructions, Instruction{
 				Operation: PRINT,
