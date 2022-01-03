@@ -9,6 +9,7 @@ import (
 
 func Parse(lexed []int) []Instruction {
 	parsed, index := parse(lexed, 0)
+	// if we didn't parse everything before returning, there was a bracket error
 	if index != len(lexed) {
 		fmt.Println("Bracket error!")
 		os.Exit(-1)
@@ -23,46 +24,47 @@ func parse(lexed []int, index int) ([]Instruction, int) {
 loop:
 	for index < len(lexed) {
 		l := lexed[index]
-		insLen := len(instructions)
+		instructionCount := len(instructions)
+		// switch through current
 		switch l {
 		case tokens.PLUS:
-			if insLen == 0 || instructions[insLen-1].Operation != ADD {
+			if instructionCount == 0 || instructions[instructionCount-1].Operation != ADD {
 				instructions = append(instructions, Instruction{
 					Operation: ADD,
 					Operand:   1,
 				})
 			} else {
-				instructions[insLen-1].Operand += 1
+				instructions[instructionCount-1].Operand += 1
 			}
 
 		case tokens.MINUS:
-			if insLen == 0 || instructions[insLen-1].Operation != ADD {
+			if instructionCount == 0 || instructions[instructionCount-1].Operation != ADD {
 				instructions = append(instructions, Instruction{
 					Operation: ADD,
 					Operand:   -1,
 				})
 			} else {
-				instructions[insLen-1].Operand -= 1
+				instructions[instructionCount-1].Operand -= 1
 			}
 
 		case tokens.RIGHT:
-			if insLen == 0 || instructions[insLen-1].Operation != MOVE {
+			if instructionCount == 0 || instructions[instructionCount-1].Operation != MOVE {
 				instructions = append(instructions, Instruction{
 					Operation: MOVE,
 					Operand:   1,
 				})
 			} else {
-				instructions[insLen-1].Operand += 1
+				instructions[instructionCount-1].Operand += 1
 			}
 
 		case tokens.LEFT:
-			if insLen == 0 || instructions[insLen-1].Operation != MOVE {
+			if instructionCount == 0 || instructions[instructionCount-1].Operation != MOVE {
 				instructions = append(instructions, Instruction{
 					Operation: MOVE,
 					Operand:   -1,
 				})
 			} else {
-				instructions[insLen-1].Operand -= 1
+				instructions[instructionCount-1].Operand -= 1
 			}
 
 		case tokens.OUT:

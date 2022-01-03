@@ -16,7 +16,9 @@ var lexMap = map[rune]int{
 func Lex(code string) []int {
 	lexed := make([]int, 0)
 	for _, c := range code {
+		// filter actual symbols from "comments"
 		if val, ok := lexMap[c]; ok {
+			// append actual symbols to the lexed symbols
 			lexed = append(lexed, val)
 		}
 	}

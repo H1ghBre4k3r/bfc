@@ -33,7 +33,9 @@ func interpret(parsed []parser.Instruction) {
 
 func eval(parsed []parser.Instruction, index *int, memory *[]byte, pointer *int) {
 	for *index < len(parsed) {
+		// get current symbol
 		i := parsed[*index]
+		// increment...cause, why not?
 		*index++
 
 		switch i.Operation {
@@ -44,18 +46,25 @@ func eval(parsed []parser.Instruction, index *int, memory *[]byte, pointer *int)
 			(*memory)[*pointer] += byte(i.Operand)
 
 		case parser.START_LOOP:
-			newIndex := *index
+			// by default, skip the loop
+			newIndex := *index + 2
+			// looping lui
 			for (*memory)[*pointer] != 0 {
 				newIndex = *index
 				eval(parsed, &newIndex, memory, pointer)
 			}
+			// start from the new index
 			*index = newIndex
 
 		case parser.END_LOOP:
+			// here, we just return. The important variables are already changed via pointers.
 			return
 
 		case parser.PRINT:
 			fmt.Print(string((*memory)[*pointer]))
+
+		case parser.READ:
+			// maybe implement that later
 		}
 	}
 }
