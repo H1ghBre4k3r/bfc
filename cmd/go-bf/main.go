@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+	"fmt"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	inputPath := flag.String("f", "", "input file for interpreter/compiler")
+
+	flag.Parse()
+
+	fmt.Printf("%v\n", *inputPath)
 }
