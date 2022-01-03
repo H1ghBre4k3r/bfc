@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/H1ghBre4k3r/go-bf/internal/input"
+	"github.com/H1ghBre4k3r/go-bf/internal/lexer"
 )
 
 type Interpreter struct {
@@ -17,5 +18,6 @@ func New(inputPath string) *Interpreter {
 }
 
 func (i *Interpreter) Start() {
-	fmt.Println("Starting simulation")
+	lexed := lexer.Lex(i.program)
+	fmt.Printf("lexed: %v\n", lexed)
 }
