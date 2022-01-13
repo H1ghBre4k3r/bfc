@@ -78,6 +78,7 @@ loop:
 			})
 
 		case tokens.START_LOOP:
+			// TODO lome: actually move code inside of parsed look token to properly represent control flow
 			parsed, newIndex := parse(lexed, index+1)
 			instructions = append(instructions, Instruction{
 				Operation: START_LOOP,
@@ -88,6 +89,7 @@ loop:
 			continue
 
 		case tokens.END_LOOP:
+			// TODO lome: remove that in favor of bundled loops
 			instructions = append(instructions, Instruction{
 				Operation: END_LOOP,
 			})
