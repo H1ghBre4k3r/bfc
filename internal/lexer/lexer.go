@@ -14,6 +14,7 @@ var lexMap = map[rune]int{
 }
 
 func Lex(code string) []int {
+	// TODO lome: add positions in files to lexed tokens
 	lexed := make([]int, 0)
 	for _, c := range code {
 		// filter actual symbols from "comments"

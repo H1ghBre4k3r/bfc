@@ -78,10 +78,11 @@ loop:
 			})
 
 		case tokens.START_LOOP:
+			parsed, newIndex := parse(lexed, index+1)
 			instructions = append(instructions, Instruction{
 				Operation: START_LOOP,
+				Operand:   newIndex - index,
 			})
-			parsed, newIndex := parse(lexed, index+1)
 			instructions = append(instructions, parsed...)
 			index = newIndex + 1
 			continue

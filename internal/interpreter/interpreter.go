@@ -47,7 +47,7 @@ func eval(parsed []parser.Instruction, index *int, memory *[]byte, pointer *int)
 
 		case parser.START_LOOP:
 			// by default, skip the loop
-			newIndex := *index + 2
+			newIndex := *index + i.Operand
 			// looping lui
 			for (*memory)[*pointer] != 0 {
 				newIndex = *index
