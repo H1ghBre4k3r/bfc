@@ -9,18 +9,20 @@ import (
 )
 
 type Interpreter struct {
+	path    string
 	program string
 }
 
 func New(inputPath string) *Interpreter {
 	return &Interpreter{
+		path:    inputPath,
 		program: input.ReadFile(inputPath),
 	}
 }
 
 func (i *Interpreter) Start() {
-	lexed := lexer.Lex(i.program)
-	parsed := parser.Parse(lexed)
+	lexed := lexer.Lex(i.program, i.path)
+	parsed := parser.Parse(i.path, lexed)
 	interpret(parsed)
 }
 

@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/H1ghBre4k3r/go-bf/internal/tokens"
+import (
+	"fmt"
+
+	"github.com/H1ghBre4k3r/go-bf/internal/tokens"
+)
 
 var lexMap = map[rune]int{
 	'<': tokens.LEFT,
@@ -13,14 +17,38 @@ var lexMap = map[rune]int{
 	',': tokens.IN,
 }
 
-func Lex(code string) []int {
-	// TODO lome: add positions in files to lexed tokens
-	lexed := make([]int, 0)
+type Position struct {
+	Line   int
+	Column int
+}
+
+type LexToken struct {
+	Typ      int
+	Position Position
+}
+
+func Lex(code string, filePath string) []LexToken {
+	fmt.Printf("[INFO] Lexing %v\n", filePath)
+	lexed := make([]LexToken, 0)
+	line := 0
+	column := 0
 	for _, c := range code {
 		// filter actual symbols from "comments"
 		if val, ok := lexMap[c]; ok {
 			// append actual symbols to the lexed symbols
-			lexed = append(lexed, val)
+			lexed = append(lexed, LexToken{
+				Typ: val,
+				Position: Position{
+					Line:   line,
+					Column: column,
+				},
+			})
+		}
+		if c == '\n' {
+			line++
+			column = 0
+		} else {
+			column++
 		}
 	}
 	return lexed
