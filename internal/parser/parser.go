@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/H1ghBre4k3r/go-bf/internal/lexer"
 	"github.com/H1ghBre4k3r/go-bf/internal/tokens"
@@ -33,7 +34,11 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 					Operand:   1,
 				})
 			} else {
-				instructions[instructionCount-1].Operand += 1
+				curVal, ok := instructions[instructionCount-1].Operand.(int)
+				if !ok {
+					panic(fmt.Sprintf("error during parsing. token of type '%v' had non working operand of type %v!", l.Typ, reflect.TypeOf(instructions[instructionCount-1].Operand).Kind()))
+				}
+				instructions[instructionCount-1].Operand = curVal + 1
 			}
 
 		case tokens.MINUS:
@@ -43,7 +48,11 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 					Operand:   -1,
 				})
 			} else {
-				instructions[instructionCount-1].Operand -= 1
+				curVal, ok := instructions[instructionCount-1].Operand.(int)
+				if !ok {
+					panic(fmt.Sprintf("error during parsing. token of type '%v' had non working operand of type %v!", l.Typ, reflect.TypeOf(instructions[instructionCount-1].Operand).Kind()))
+				}
+				instructions[instructionCount-1].Operand = curVal - 1
 			}
 
 		case tokens.RIGHT:
@@ -53,7 +62,11 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 					Operand:   1,
 				})
 			} else {
-				instructions[instructionCount-1].Operand += 1
+				curVal, ok := instructions[instructionCount-1].Operand.(int)
+				if !ok {
+					panic(fmt.Sprintf("error during parsing. token of type '%v' had non working operand of type %v!", l.Typ, reflect.TypeOf(instructions[instructionCount-1].Operand).Kind()))
+				}
+				instructions[instructionCount-1].Operand = curVal + 1
 			}
 
 		case tokens.LEFT:
@@ -63,7 +76,11 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 					Operand:   -1,
 				})
 			} else {
-				instructions[instructionCount-1].Operand -= 1
+				curVal, ok := instructions[instructionCount-1].Operand.(int)
+				if !ok {
+					panic(fmt.Sprintf("error during parsing. token of type '%v' had non working operand of type %v!", l.Typ, reflect.TypeOf(instructions[instructionCount-1].Operand).Kind()))
+				}
+				instructions[instructionCount-1].Operand = curVal - 1
 			}
 
 		case tokens.OUT:
@@ -83,10 +100,9 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 				return instructions, newIndex, fmt.Errorf("opening bracket not closed: \n\t%v:%v:%v", filePath, l.Position.Line, l.Position.Column)
 			}
 			instructions = append(instructions, Instruction{
-				Operation: START_LOOP,
-				Operand:   newIndex - index,
+				Operation: LOOP,
+				Operand:   parsed,
 			})
-			instructions = append(instructions, parsed...)
 			index = newIndex + 1
 			continue
 
@@ -94,11 +110,6 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 			var err error
 			if !inLoop {
 				err = fmt.Errorf("unexpected closing bracket at: \n\t%v:%v:%v", filePath, l.Position.Line, l.Position.Column)
-			} else {
-				// TODO lome: remove that in favor of bundled loops
-				instructions = append(instructions, Instruction{
-					Operation: END_LOOP,
-				})
 			}
 			return instructions, index + i, err
 		}

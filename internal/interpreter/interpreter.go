@@ -23,10 +23,11 @@ func New(inputPath string) *Interpreter {
 func (i *Interpreter) Start() {
 	lexed := lexer.Lex(i.program, i.path)
 	parsed := parser.Parse(i.path, lexed)
-	interpret(parsed)
+	i.interpret(parsed)
 }
 
-func interpret(parsed []parser.Instruction) {
+func (i *Interpreter) interpret(parsed []parser.Instruction) {
+	fmt.Printf("[INFO] Interpreting %v\n", i.path)
 	memory := make([]byte, 300000)
 	pointer := 0
 	index := 0
@@ -34,33 +35,23 @@ func interpret(parsed []parser.Instruction) {
 }
 
 func eval(parsed []parser.Instruction, index *int, memory *[]byte, pointer *int) {
-	for *index < len(parsed) {
+	for ; *index < len(parsed); *index++ {
 		// get current symbol
 		i := parsed[*index]
-		// increment...cause, why not?
-		*index++
 
 		switch i.Operation {
 		case parser.MOVE:
-			*pointer += i.Operand
+			*pointer += i.Operand.(int)
 
 		case parser.ADD:
-			(*memory)[*pointer] += byte(i.Operand)
+			(*memory)[*pointer] += byte(i.Operand.(int))
 
-		case parser.START_LOOP:
-			// by default, skip the loop
-			newIndex := *index + i.Operand
-			// looping lui
+		case parser.LOOP:
+			instructions := i.Operand.([]parser.Instruction)
 			for (*memory)[*pointer] != 0 {
-				newIndex = *index
-				eval(parsed, &newIndex, memory, pointer)
+				newIndex := 0
+				eval(instructions, &newIndex, memory, pointer)
 			}
-			// start from the new index
-			*index = newIndex
-
-		case parser.END_LOOP:
-			// here, we just return. The important variables are already changed via pointers.
-			return
 
 		case parser.PRINT:
 			fmt.Print(string((*memory)[*pointer]))
