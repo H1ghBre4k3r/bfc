@@ -23,4 +23,4 @@ bin/
 .env*
 
 __pycache__/
-# output
+output
