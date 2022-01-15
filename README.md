@@ -1,6 +1,6 @@
 # go-bf
 
-> ⚠️ Care! Currently, this project only works on macOS.
+> ⚠️ Care! Currently, this project only works on x64 macOS.
 
 Brainfuck simulator and compiler (currently only for macOS) written in Go.
 
