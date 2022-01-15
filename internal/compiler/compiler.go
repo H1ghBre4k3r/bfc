@@ -28,7 +28,7 @@ func (c *Compiler) Start() {
 	lexed := lexer.Lex(c.program, c.path)
 	parsed := parser.Parse(lexed, c.path)
 	compiled := c.compile(parsed)
-	c.saveCode(compiled)
+	c.saveCode(fmt.Sprintf(base, compiled))
 }
 
 var label = 0
@@ -40,20 +40,30 @@ func (c *Compiler) compile(parsed []parser.Instruction) string {
 
 		switch i.Operation {
 		case parser.MOVE:
-			toReturn += fmt.Sprintf("    MOVE %v\n", i.Operand.(int))
+			toReturn += fmt.Sprintf("; MOVE %v\n", i.Operand.(int))
+			toReturn += fmt.Sprintf("    add	\trdi, %v\n", i.Operand.(int))
 
 		case parser.ADD:
-			toReturn += fmt.Sprintf("    ADD %v\n", i.Operand.(int))
+			toReturn += fmt.Sprintf("; ADD %v\n", i.Operand.(int))
+			toReturn += fmt.Sprintf("	add 	byte[rdx+rdi], %v\n", i.Operand.(int))
 
 		case parser.LOOP:
 			jumpLabel := label
-			toReturn += fmt.Sprintf("    IF MEM[PTR] == 0 GO TO label_%v\n", jumpLabel)
 			label++
+			toReturn += fmt.Sprintf("; LOOP to loop_%v\n", jumpLabel)
+			toReturn += fmt.Sprintf("loop_%v_start: \n", jumpLabel)
+			toReturn += "	cmp 	byte[rdx+rdi], 0\n"
+			toReturn += fmt.Sprintf("	je		loop_%v_end\n", jumpLabel)
+
 			toReturn += c.compile(i.Operand.([]parser.Instruction))
-			toReturn += fmt.Sprintf("label_%v:\n", jumpLabel)
+
+			toReturn += fmt.Sprintf("	jmp		loop_%v_start\n", jumpLabel)
+			toReturn += fmt.Sprintf("loop_%v_end:\n", jumpLabel)
 
 		case parser.PRINT:
-			toReturn += "    PRINT\n"
+			toReturn += "; PRINT\n"
+			toReturn += "	lea 	rsi, [rdx+rdi]\n"
+			toReturn += "	call 	print\n"
 
 		case parser.READ:
 			// maybe later
