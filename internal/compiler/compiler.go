@@ -3,6 +3,7 @@ package compiler
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/H1ghBre4k3r/go-bf/internal/input"
 	"github.com/H1ghBre4k3r/go-bf/internal/lexer"
@@ -10,14 +11,16 @@ import (
 )
 
 type Compiler struct {
-	path    string
-	program string
+	path       string
+	outputPath string
+	program    string
 }
 
-func New(inputPath string) *Compiler {
+func New(inputPath string, outputPath string) *Compiler {
 	return &Compiler{
-		path:    inputPath,
-		program: input.ReadFile(inputPath),
+		path:       inputPath,
+		outputPath: outputPath,
+		program:    input.ReadFile(inputPath),
 	}
 }
 
@@ -60,5 +63,13 @@ func (c *Compiler) compile(parsed []parser.Instruction) string {
 }
 
 func (c *Compiler) saveCode(code string) {
-	os.WriteFile(c.path+".asm", []byte(code), 0644)
+	outputPath := c.path + ".asm"
+	if c.outputPath != "" {
+		name := filepath.Base(c.path)
+		outputPath = filepath.Join(c.outputPath, name+".asm")
+	}
+	if err := os.WriteFile(outputPath, []byte(code), 0644); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(-1)
+	}
 }
