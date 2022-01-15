@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"os"
 
+	"github.com/H1ghBre4k3r/go-bf/internal/compiler"
 	"github.com/H1ghBre4k3r/go-bf/internal/interpreter"
 )
 
@@ -15,8 +14,8 @@ func main() {
 	flag.Parse()
 
 	if *compile {
-		fmt.Println("Compilation currently not supported!")
-		os.Exit(-1)
+		comp := compiler.New(*inputPath)
+		comp.Start()
 	} else {
 		inter := interpreter.New(*inputPath)
 		inter.Start()

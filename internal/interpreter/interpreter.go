@@ -22,7 +22,7 @@ func New(inputPath string) *Interpreter {
 
 func (i *Interpreter) Start() {
 	lexed := lexer.Lex(i.program, i.path)
-	parsed := parser.Parse(i.path, lexed)
+	parsed := parser.Parse(lexed, i.path)
 	i.interpret(parsed)
 }
 

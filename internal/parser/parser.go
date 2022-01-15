@@ -8,7 +8,7 @@ import (
 	"github.com/H1ghBre4k3r/go-bf/internal/tokens"
 )
 
-func Parse(filePath string, lexed []lexer.LexToken) []Instruction {
+func Parse(lexed []lexer.LexToken, filePath string) []Instruction {
 	fmt.Printf("[INFO] Parsing %v\n", filePath)
 	parsed, _, err := parse(lexed, 0, filePath, false)
 	// if we didn't parse everything before returning, there was a bracket error
