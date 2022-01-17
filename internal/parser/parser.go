@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/H1ghBre4k3r/go-bf/internal/lexer"
-	"github.com/H1ghBre4k3r/go-bf/internal/tokens"
 )
 
 func Parse(lexed []lexer.LexToken, filePath string) []Instruction {
@@ -27,7 +26,7 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 		instructionCount := len(instructions)
 		// switch through current
 		switch l.Typ {
-		case tokens.PLUS:
+		case lexer.PLUS:
 			if instructionCount == 0 || instructions[instructionCount-1].Operation != ADD {
 				instructions = append(instructions, Instruction{
 					Operation: ADD,
@@ -41,7 +40,7 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 				instructions[instructionCount-1].Operand = curVal + 1
 			}
 
-		case tokens.MINUS:
+		case lexer.MINUS:
 			if instructionCount == 0 || instructions[instructionCount-1].Operation != ADD {
 				instructions = append(instructions, Instruction{
 					Operation: ADD,
@@ -55,7 +54,7 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 				instructions[instructionCount-1].Operand = curVal - 1
 			}
 
-		case tokens.RIGHT:
+		case lexer.RIGHT:
 			if instructionCount == 0 || instructions[instructionCount-1].Operation != MOVE {
 				instructions = append(instructions, Instruction{
 					Operation: MOVE,
@@ -69,7 +68,7 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 				instructions[instructionCount-1].Operand = curVal + 1
 			}
 
-		case tokens.LEFT:
+		case lexer.LEFT:
 			if instructionCount == 0 || instructions[instructionCount-1].Operation != MOVE {
 				instructions = append(instructions, Instruction{
 					Operation: MOVE,
@@ -83,18 +82,17 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 				instructions[instructionCount-1].Operand = curVal - 1
 			}
 
-		case tokens.OUT:
+		case lexer.OUT:
 			instructions = append(instructions, Instruction{
 				Operation: PRINT,
 			})
 
-		case tokens.IN:
+		case lexer.IN:
 			instructions = append(instructions, Instruction{
 				Operation: READ,
 			})
 
-		case tokens.START_LOOP:
-			// TODO lome: actually move code inside of parsed look token to properly represent control flow
+		case lexer.START_LOOP:
 			parsed, newIndex, err := parse(lexed, index+1, filePath, true)
 			if err != nil {
 				return instructions, newIndex, fmt.Errorf("opening bracket not closed: \n\t%v:%v:%v", filePath, l.Position.Line, l.Position.Column)
@@ -106,7 +104,7 @@ func parse(lexed []lexer.LexToken, index int, filePath string, inLoop bool) ([]I
 			index = newIndex + 1
 			continue
 
-		case tokens.END_LOOP:
+		case lexer.END_LOOP:
 			var err error
 			if !inLoop {
 				err = fmt.Errorf("unexpected closing bracket at: \n\t%v:%v:%v", filePath, l.Position.Line, l.Position.Column)

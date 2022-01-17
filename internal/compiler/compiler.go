@@ -56,7 +56,7 @@ func (c *Compiler) compile(parsed []parser.Instruction) string {
 		case parser.LOOP:
 			jumpLabel := label
 			label++
-			toReturn += fmt.Sprintf("; LOOP to loop_%v\n", jumpLabel)
+			toReturn += fmt.Sprintf("; LOOP for loop_%v\n", jumpLabel)
 			toReturn += fmt.Sprintf("loop_%v_start: \n", jumpLabel)
 			toReturn += "	cmp 	byte[rdx+rdi], 0\n"
 			toReturn += fmt.Sprintf("	je		loop_%v_end\n", jumpLabel)

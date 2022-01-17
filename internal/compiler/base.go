@@ -28,6 +28,6 @@ _main:
     syscall
 
 segment .bss
-arraySize equ 30000
+arraySize equ 3000
 array: resb arraySize
 `

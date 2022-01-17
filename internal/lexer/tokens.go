@@ -1,4 +1,4 @@
-package tokens
+package lexer
 
 const (
 	LEFT       = iota

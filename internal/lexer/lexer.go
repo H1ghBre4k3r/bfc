@@ -2,19 +2,17 @@ package lexer
 
 import (
 	"fmt"
-
-	"github.com/H1ghBre4k3r/go-bf/internal/tokens"
 )
 
 var lexMap = map[rune]int{
-	'<': tokens.LEFT,
-	'>': tokens.RIGHT,
-	'+': tokens.PLUS,
-	'-': tokens.MINUS,
-	'[': tokens.START_LOOP,
-	']': tokens.END_LOOP,
-	'.': tokens.OUT,
-	',': tokens.IN,
+	'<': LEFT,
+	'>': RIGHT,
+	'+': PLUS,
+	'-': MINUS,
+	'[': START_LOOP,
+	']': END_LOOP,
+	'.': OUT,
+	',': IN,
 }
 
 type Position struct {
