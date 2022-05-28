@@ -24,3 +24,8 @@ bin/
 
 __pycache__/
 output
+
+
+# Added by cargo
+
+/target
