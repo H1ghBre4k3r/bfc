@@ -25,3 +25,18 @@ pub fn lex(code: &String, filepath: &String) -> Vec<Token> {
 
     return lexed;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::lex;
+
+    #[test]
+    fn test_lex_empty_code() {
+        assert!(lex(&"".to_owned(), &"".to_owned()).len() == 0);
+    }
+
+    #[test]
+    fn test_lex_only_comments() {
+        assert!(lex(&"this is a long comment".to_owned(), &"".to_owned()).len() == 0);
+    }
+}
