@@ -9,8 +9,6 @@ pub fn lex(code: &String, filepath: &String) -> Vec<Token> {
     let mut column = 0;
 
     for c in code.chars() {
-        println!("{}", c);
-
         if let Some(token) = from(c, Position { column, line }) {
             lexed.push(token);
         }
