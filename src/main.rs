@@ -1,4 +1,10 @@
+mod lexing;
+mod util;
+
+use std::process;
+
 use clap::{IntoApp, Parser};
+use lexing::lexer;
 
 #[derive(Parser, Debug)]
 #[clap(name = "BFC")]
@@ -31,5 +37,12 @@ fn main() {
         }
     }
 
-    println!("{:?}", args);
+    let content = match util::read_file(&args.file) {
+        Ok(content) => content,
+        Err(_) => {
+            eprintln!("Could not open file '{}'!", &args.file);
+            process::exit(-1);
+        }
+    };
+    println!("{:?}", lexer::lex(&content, &args.file));
 }
