@@ -12,7 +12,7 @@ jobs:
         with:
           toolchain: stable
       - uses: actions-rs/cargo@v1
-        name: Build Library
+        name: Build Application
         with:
           command: build
           args: --release --all-features
