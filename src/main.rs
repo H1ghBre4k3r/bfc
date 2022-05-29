@@ -1,10 +1,12 @@
 mod lexing;
+mod parsing;
 mod util;
 
 use std::process;
 
 use clap::{IntoApp, Parser};
 use lexing::lexer;
+use parsing::parser::parse;
 
 #[derive(Parser, Debug)]
 #[clap(name = "BFC")]
@@ -44,5 +46,7 @@ fn main() {
             process::exit(-1);
         }
     };
-    println!("{:?}", lexer::lex(&content, &args.file));
+
+    let lexed = lexer::lex(&content, &args.file);
+    println!("{:?}", parse(&lexed, &args.file))
 }
