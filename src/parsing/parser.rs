@@ -51,7 +51,7 @@ fn _parse(
                     parsed.push(super::tokens::Token::MOVE(1))
                 } else {
                     if let super::tokens::Token::MOVE(amount) = parsed[instruction_count - 1] {
-                        parsed[instruction_count - 1] = super::tokens::Token::ADD(amount + 1);
+                        parsed[instruction_count - 1] = super::tokens::Token::MOVE(amount + 1);
                     }
                 }
             }
