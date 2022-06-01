@@ -1,4 +1,4 @@
-use std::{fmt::format, process};
+use std::{fmt::format, fs, path::Path, process};
 
 use crate::{
     lexing::lexer::lex,
@@ -6,7 +6,7 @@ use crate::{
     util::read_file,
 };
 
-pub fn compile(filepath: &String) {
+pub fn compile(filepath: &String, output_folder: &String) {
     let code = read_file(filepath);
     match code {
         Err(_) => {
@@ -17,7 +17,7 @@ pub fn compile(filepath: &String) {
             let lexed = lex(&code, filepath);
             let parsed = parse(&lexed, filepath);
             let compiled = _compile(parsed);
-            println!(
+            let code = format!(
                 "
 default rel
 global _main
@@ -50,8 +50,36 @@ arraySize equ 3000
 array: resb arraySize
             ",
                 compiled
-            )
+            );
+            save_code(&code, filepath, output_folder);
         }
+    }
+}
+
+fn gen_outpath(filepath: &String, output_folder: &String, ending: &str) -> String {
+    let mut out_path = filepath.clone() + ending;
+    if output_folder != "" {
+        let name = Path::new(filepath)
+            .parent()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
+        out_path = Path::new(output_folder)
+            .join(Path::new((name + ending).as_str()))
+            .to_str()
+            .unwrap()
+            .to_owned();
+    }
+
+    return out_path;
+}
+
+fn save_code(code: &String, filepath: &String, out_folder: &String) {
+    let out_path = gen_outpath(filepath, out_folder, ".asm");
+    if let Err(err) = fs::write(out_path, code) {
+        eprintln!("{}", err);
+        process::exit(-1);
     }
 }
 
@@ -63,7 +91,7 @@ fn _compile(parsed: Vec<Token>) -> String {
         match instruction {
             Token::MOVE(amount) => {
                 asm += format!("; MOVE {}\n", amount).as_str();
-                asm += format!("    add     \trdi, {}\n", amount).as_str();
+                asm += format!("    add     rdi, {}\n", amount).as_str();
             }
             Token::ADD(amount) => {
                 asm += format!("; ADD {}\n", amount).as_str();

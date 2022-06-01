@@ -40,7 +40,7 @@ fn main() {
     }
 
     if args.compile {
-        compile(&args.file);
+        compile(&args.file, &args.output.unwrap());
     } else {
         interpret(&args.file);
     }
