@@ -1,0 +1,12 @@
+[package]
+name = "bfc"
+version = "0.1.0"
+edition = "2021"
+about = "Brainfuck Compiler"
+authors = ["Louis Meyer <h1ghbre4k3r@dev.bre4k3r.de>"]
+license = "GPL-3.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "3.1.18", features = ["derive"] }
