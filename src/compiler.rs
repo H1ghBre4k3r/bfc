@@ -1,4 +1,9 @@
-use std::{fmt::format, fs, path::Path, process};
+use std::{
+    fmt::format,
+    fs, os,
+    path::Path,
+    process::{self, Command},
+};
 
 use crate::{
     lexing::lexer::lex,
@@ -52,6 +57,7 @@ array: resb arraySize
                 compiled
             );
             save_code(&code, filepath, output_folder);
+            compile_nasm(filepath, output_folder);
         }
     }
 }
@@ -71,15 +77,28 @@ fn gen_outpath(filepath: &String, output_folder: &String, ending: &str) -> Strin
             .unwrap()
             .to_owned();
     }
-
     return out_path;
 }
 
-fn save_code(code: &String, filepath: &String, out_folder: &String) {
-    let out_path = gen_outpath(filepath, out_folder, ".asm");
+fn save_code(code: &String, filepath: &String, output_folder: &String) {
+    let out_path = gen_outpath(filepath, output_folder, ".asm");
     if let Err(err) = fs::write(out_path, code) {
         eprintln!("{}", err);
         process::exit(-1);
+    }
+}
+
+fn compile_nasm(filepath: &String, output_folder: &String) {
+    println!("[INFO] Compiling NASM for {}", filepath);
+    if let Err(err) = Command::new("nasm")
+        .args([
+            "-f",
+            "macho64",
+            gen_outpath(filepath, output_folder, ".asm").as_str(),
+        ])
+        .spawn()
+    {
+        eprintln!("[ERROR] Could not compile NASM ({})", &err);
     }
 }
 
