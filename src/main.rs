@@ -1,9 +1,11 @@
+mod compiler;
 mod interpreter;
 mod lexing;
 mod parsing;
 mod util;
 
 use clap::{IntoApp, Parser};
+use compiler::compile;
 use interpreter::interpret;
 
 #[derive(Parser, Debug)]
@@ -38,6 +40,7 @@ fn main() {
     }
 
     if args.compile {
+        compile(&args.file);
     } else {
         interpret(&args.file);
     }
